@@ -166,7 +166,29 @@ const I18N = {
         "Returns courier information for an order. If the order is active and the courier is on the way, latitude and longitude may also be returned.",
       client: "Returns client profile information and allowed payment methods.",
       "bank-cards": "Returns saved bank cards that can be used when creating orders.",
-      labels: "Returns package labels in ZPL or PDF format."
+      labels: "Returns package labels in ZPL or PDF format.",
+      "status-model":
+        "An order is the top-level entity that contains all delivery points. A delivery is a more detailed entity for a single order point.",
+      "order-types":
+        "For standard orders, the courier visits addresses within the selected time windows. End-of-day orders are delivered during the day and accept exactly 2 points.",
+      "payment-methods":
+        "Supported payment methods are cash, balance, and bank_card. bank_card requires bank_card_id.",
+      "order-callback":
+        "When a Callback URL is configured in the personal cabinet, order_created and order_changed events are sent to that URL as JSON. Verify requests with the X-DV-Signature HMAC SHA256 signature.",
+      "delivery-callback":
+        "When delivery callbacks are enabled, delivery_created and delivery_changed events are sent with a separate delivery model. Failed callback deliveries are retried for up to 24 hours.",
+      "how-to-place-order":
+        "The standard order flow has two steps: first calculate cost and validation with /calculate-order, then complete the same data and create the order with /create-order.",
+      "track-order-delivery":
+        "Orders and deliveries can be tracked in two ways: automatic callback notifications or manual polling with /orders and /courier.",
+      "goods-buyout":
+        "If the courier pays for goods at pickup and collects payment from the customer at delivery, send buyout_amount on the pickup point and taking_amount on the delivery point.",
+      "request-error-codes":
+        "Business API may return request error codes. Common examples include required_auth_token, invalid_auth_token, required_method_get, required_method_post, invalid_post_json, invalid_parameters, and invalid_api_method.",
+      "parameter-error-codes":
+        "Parameter-level error codes include required, unknown, invalid_list, invalid_object, invalid_boolean, invalid_date, invalid_integer, invalid_string, invalid_phone, invalid_region, address_not_found, min_length, and max_length.",
+      "changelog-1-6":
+        "In Business API 1.6, several fee fields became nullable, and is_thermobox_required, return_point, checkin_code, pickup_checkin_code, and delivery checkin_code fields were added."
     }
   }
 };
@@ -234,6 +256,13 @@ const PARAMETER_DESCRIPTIONS_EN = {
   vehicle_type_id: "Vehicle type. Default is 8 for standard orders; prohibited for end-of-day orders."
 };
 
+const PARAMETER_DESCRIPTIONS_EN_BY_ENDPOINT = {
+  "labels:type": "Label type: zpl or pdf.",
+  "order-callback:event_type": "order_created or order_changed.",
+  "delivery-callback:event_type": "delivery_created or delivery_changed.",
+  "changelog-1-6:checkin_code": "Arrival PIN code used in the point and delivery model."
+};
+
 const state = {
   apiData: null,
   endpoints: [],
@@ -274,10 +303,16 @@ function localizedEndpointDescription(endpoint) {
   return I18N[state.currentLang]?.endpointDescriptions?.[endpoint.id] || endpoint.description;
 }
 
-function localizedParameterDescription(parameter) {
+function localizedParameterDescription(parameter, endpoint) {
   if (state.currentLang !== "en") return parameter.description;
 
-  return PARAMETER_DESCRIPTIONS_EN[parameter.name] || parameter.description;
+  const endpointKey = endpoint ? `${endpoint.id}:${parameter.name}` : "";
+
+  return (
+    PARAMETER_DESCRIPTIONS_EN_BY_ENDPOINT[endpointKey] ||
+    PARAMETER_DESCRIPTIONS_EN[parameter.name] ||
+    parameter.description
+  );
 }
 
 function localizedResponseLabel(label) {
@@ -403,7 +438,7 @@ function endpointSearchText(endpoint) {
       parameter.name,
       parameter.type,
       parameter.description,
-      localizedParameterDescription(parameter)
+      localizedParameterDescription(parameter, endpoint)
     ])
   ]
     .filter(Boolean)
@@ -445,7 +480,7 @@ function applySearchFilter() {
   });
 }
 
-function renderParameterRows(parameters) {
+function renderParameterRows(parameters, endpoint) {
   if (!parameters.length) {
     return `
       <tr>
@@ -461,7 +496,7 @@ function renderParameterRows(parameters) {
           <td><code>${escapeHtml(parameter.name)}</code></td>
           <td>${escapeHtml(parameter.type)}</td>
           <td>${parameter.required ? escapeHtml(t("yes")) : escapeHtml(t("no"))}</td>
-          <td>${escapeHtml(localizedParameterDescription(parameter))}</td>
+          <td>${escapeHtml(localizedParameterDescription(parameter, endpoint))}</td>
         </tr>
       `
     )
@@ -559,7 +594,7 @@ function renderEndpointContent() {
                 </tr>
               </thead>
               <tbody>
-                ${renderParameterRows(endpoint.parameters || [])}
+                ${renderParameterRows(endpoint.parameters || [], endpoint)}
               </tbody>
             </table>
           </div>
@@ -631,8 +666,8 @@ function renderCodePanel() {
     ${renderTryItOut(endpoint)}
   `;
 
-  setCodeSampleCollapsed(true);
   highlightCode();
+  setCodeSampleCollapsed(true);
 }
 
 function isRunnableEndpoint(endpoint) {
@@ -845,10 +880,13 @@ async function copyCodeSample(button) {
 
 function setCodeSampleCollapsed(shouldCollapse) {
   const card = nodes.codeExamples.querySelector("[data-code-card]");
+  const pre = card?.querySelector("pre");
 
-  if (!card) return;
+  if (!card || !pre) return;
 
   card.classList.toggle("collapsed", shouldCollapse);
+  pre.style.maxHeight = shouldCollapse ? "74px" : `${pre.scrollHeight}px`;
+  pre.style.overflow = shouldCollapse ? "hidden" : "visible";
 
   nodes.codeExamples.querySelectorAll("[data-code-action]").forEach((button) => {
     const isActive =

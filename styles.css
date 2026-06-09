@@ -892,14 +892,12 @@ pre code {
 }
 
 .code-card:not(.collapsed) pre {
-  max-height: none !important;
-  overflow: visible !important;
+  overflow: visible;
   border-bottom: 0;
 }
 
 .code-card.collapsed pre {
   position: relative;
-  max-height: 74px !important;
   overflow: hidden;
   border-bottom: 1px solid var(--code-line);
 }
