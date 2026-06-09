@@ -1,0 +1,1828 @@
+{
+  "title": "Banabikurye Business API",
+  "version": "Business API 1.6",
+  "description": "Business API allows you to automatically place delivery orders in Banabikurye, manage orders, retrieve courier information and subscribe to order or delivery updates.",
+  "baseUrls": {
+    "test": "https://robotapitest.banabikurye.com/api/business/1.6",
+    "production": "https://robot.banabikurye.com/api/business/1.6"
+  },
+  "auth": {
+    "header": "X-DV-Auth-Token",
+    "description": "Secret auth token. Must be sent as an HTTP header with every request."
+  },
+  "categories": [
+    {
+      "name": "Overview",
+      "items": [
+        {
+          "id": "overview",
+          "endpoint": "INFO Overview",
+          "method": "INFO",
+          "description": "Banabikurye Business API entegrasyonu test ortamında robotapitest.banabikurye.com ile doğrulanır. Test başarılı olduktan sonra production erişimi için api.tr@borzodelivery.com adresiyle iletişime geçilir.",
+          "parameters": [
+            {
+              "name": "testUrl",
+              "type": "string",
+              "required": true,
+              "description": "Test istekleri için https://robotapitest.banabikurye.com/api/business/1.6 kullanılır."
+            },
+            {
+              "name": "productionUrl",
+              "type": "string",
+              "required": true,
+              "description": "Production istekleri için https://robot.banabikurye.com/api/business/1.6 kullanılır."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6'",
+            "javascript": "const baseUrl = \"https://robotapitest.banabikurye.com/api/business/1.6\";\nconst token = process.env.BANABIKURYE_TOKEN;\n\nconst response = await fetch(baseUrl, {\n  headers: { \"X-DV-Auth-Token\": token }\n});\n\nconst result = await response.json();"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "is_successful",
+                "type": "boolean",
+                "description": "Whether the request was successful."
+              }
+            ]
+          }
+        },
+        {
+          "id": "requests",
+          "endpoint": "INFO Requests",
+          "method": "INFO",
+          "description": "Tüm istekler HTTPS üzerinden yapılır. Business API dokümanına göre yalnızca GET ve POST metotları desteklenir. POST istekleri JSON body, GET istekleri query string kullanır.",
+          "parameters": [
+            {
+              "name": "X-DV-Auth-Token",
+              "type": "header string",
+              "required": true,
+              "description": "Personal cabinet içinde bulunan gizli auth token."
+            },
+            {
+              "name": "Content-Type",
+              "type": "header string",
+              "required": false,
+              "description": "POST isteklerinde application/json; charset=utf-8 olarak gönderilebilir."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"matter\":\"Documents\"}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/calculate-order'",
+            "javascript": "await fetch(`${baseUrl}/calculate-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json; charset=utf-8\"\n  },\n  body: JSON.stringify({ matter: \"Documents\" })\n});"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "is_successful",
+                "type": "boolean"
+              },
+              {
+                "name": "errors",
+                "type": "list",
+                "description": "Request error codes when request fails."
+              },
+              {
+                "name": "parameter_errors",
+                "type": "object / null",
+                "description": "Parameter-level validation errors."
+              }
+            ]
+          }
+        },
+        {
+          "id": "responses",
+          "endpoint": "INFO Responses",
+          "method": "INFO",
+          "description": "Yanıtlar JSON ve UTF-8 formatındadır. Başarılı yanıtlarda HTTP 200 ve is_successful: true döner. Hatalı isteklerde HTTP 400, is_successful: false, errors ve gerektiğinde parameter_errors alanları döner.",
+          "parameters": [
+            {
+              "name": "is_successful",
+              "type": "boolean",
+              "required": true,
+              "description": "İsteğin başarılı olup olmadığını belirtir."
+            },
+            {
+              "name": "errors",
+              "type": "list",
+              "required": false,
+              "description": "Request error code listesidir."
+            },
+            {
+              "name": "parameter_errors",
+              "type": "object / null",
+              "required": false,
+              "description": "invalid_parameters durumunda parametre bazlı hata detaylarını içerir."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"points\":[{}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
+            "javascript": "const response = await fetch(`${baseUrl}/create-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json\"\n  },\n  body: JSON.stringify({ points: [{}] })\n});\n\nconst result = await response.json();\n// { is_successful: false, errors: [\"invalid_parameters\"], parameter_errors: {...} }"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "is_successful",
+                "type": "boolean"
+              },
+              {
+                "name": "errors",
+                "type": "list"
+              },
+              {
+                "name": "parameter_errors",
+                "type": "object / null"
+              }
+            ]
+          }
+        },
+        {
+          "id": "parameter-data-types",
+          "endpoint": "INFO Parameter data types",
+          "method": "INFO",
+          "description": "Business API boolean, integer, string, date, timestamp, float, list, object, money, phone, coordinate ve null veri tiplerini kullanır. Timestamp ISO 8601 formatında ve timezone içermelidir.",
+          "parameters": [
+            {
+              "name": "timestamp",
+              "type": "YYYY-MM-DDTHH:MM:SSZ",
+              "required": false,
+              "description": "Örnek: 2026-05-21T13:14:34+03:00."
+            },
+            {
+              "name": "money",
+              "type": "string",
+              "required": false,
+              "description": "Para değeri yuvarlama hatalarını önlemek için string gönderilir. Örnek: \"190.00\"."
+            },
+            {
+              "name": "phone",
+              "type": "string",
+              "required": false,
+              "description": "Telefon numarası string olarak gönderilir. Örnek: \"908880000001\"."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"insurance_amount\":\"190.00\",\"required_start_datetime\":\"2026-05-21T13:14:34+03:00\"}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/calculate-order'",
+            "javascript": "const payload = {\n  insurance_amount: \"190.00\",\n  required_start_datetime: \"2026-05-21T13:14:34+03:00\",\n  contact_person: { phone: \"908880000001\" }\n};"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "boolean",
+                "type": "true / false"
+              },
+              {
+                "name": "integer",
+                "type": "number"
+              },
+              {
+                "name": "string",
+                "type": "string"
+              },
+              {
+                "name": "money",
+                "type": "string"
+              },
+              {
+                "name": "timestamp",
+                "type": "ISO 8601 string"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API methods",
+      "items": [
+        {
+          "id": "calculate-order",
+          "endpoint": "POST /calculate-order",
+          "method": "POST",
+          "description": "Sipariş oluşturmadan önce fiyat hesaplamak ve parametreleri doğrulamak için kullanılır. Eksik sipariş hesaplanabilir fakat sonuç imprecise olabilir; kritik problemler warnings alanında döner.",
+          "parameters": [
+            {
+              "name": "type",
+              "type": "string",
+              "required": false,
+              "description": "Order type. Varsayılan değer standard."
+            },
+            {
+              "name": "matter",
+              "type": "string / null",
+              "required": true,
+              "description": "Teslimat içeriği. Maksimum 5.000 karakter."
+            },
+            {
+              "name": "vehicle_type_id",
+              "type": "integer",
+              "required": false,
+              "description": "Araç tipi. Standard siparişlerde varsayılan 8, endofday siparişlerde gönderilmemelidir."
+            },
+            {
+              "name": "total_weight_kg",
+              "type": "integer",
+              "required": false,
+              "description": "Toplam ağırlık. Endofday siparişlerde zorunludur."
+            },
+            {
+              "name": "payment_method",
+              "type": "string",
+              "required": false,
+              "description": "Varsayılandan farklı ödeme yöntemi: cash, balance veya bank_card."
+            },
+            {
+              "name": "promo_code",
+              "type": "string / null",
+              "required": false,
+              "description": "Promosyon kodu. Örnek: ILK20."
+            },
+            {
+              "name": "points",
+              "type": "list",
+              "required": true,
+              "description": "Kuryenin ziyaret edeceği adresler. Standard siparişlerde en fazla 99 nokta; endofday siparişlerde tam 2 nokta."
+            },
+            {
+              "name": "points[].address",
+              "type": "string / null",
+              "required": true,
+              "description": "Google Maps API ile geocode edilen açık adres. Maksimum 350 karakter."
+            },
+            {
+              "name": "points[].contact_person.phone",
+              "type": "phone / null",
+              "required": true,
+              "description": "Adres noktasındaki kişinin telefon numarası."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"matter\":\"Documents\",\"promo_code\":\"ILK20\",\"points\":[{\"address\":\"Ramazanoglu Mahallesi, Ensar Cd. No:36, Istanbul\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dervisali Mahallesi, Kelebek Sk. No:2, Istanbul\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/calculate-order'",
+            "javascript": "const response = await fetch(`${baseUrl}/calculate-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json\"\n  },\n  body: JSON.stringify({\n    matter: \"Documents\",\n    promo_code: \"ILK20\",\n    points: [\n      {\n        address: \"Ramazanoglu Mahallesi, Ensar Cd. No:36, Istanbul\",\n        contact_person: { phone: \"908880000001\" }\n      },\n      {\n        address: \"Dervisali Mahallesi, Kelebek Sk. No:2, Istanbul\",\n        contact_person: { phone: \"908880000001\" }\n      }\n    ]\n  })\n});\n\nconst calculation = await response.json();"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "is_successful",
+                "type": "boolean"
+              },
+              {
+                "name": "order",
+                "type": "object (order)",
+                "children": [
+                  {
+                    "name": "order_id",
+                    "type": "integer",
+                    "description": "Full order ID."
+                  },
+                  {
+                    "name": "order_name",
+                    "type": "string",
+                    "description": "Short order ID."
+                  },
+                  {
+                    "name": "status",
+                    "type": "string",
+                    "description": "Order status."
+                  },
+                  {
+                    "name": "payment_amount",
+                    "type": "money / null",
+                    "description": "Order price."
+                  },
+                  {
+                    "name": "points",
+                    "type": "Array of objects (points)",
+                    "description": "Order pickup and delivery points.",
+                    "children": [
+                      {
+                        "name": "point_id",
+                        "type": "integer",
+                        "description": "Point ID."
+                      },
+                      {
+                        "name": "address",
+                        "type": "string",
+                        "description": "Street address."
+                      },
+                      {
+                        "name": "contact_person",
+                        "type": "object (contact_person)",
+                        "children": [
+                          {
+                            "name": "phone",
+                            "type": "phone",
+                            "description": "Contact phone."
+                          },
+                          {
+                            "name": "name",
+                            "type": "string / null",
+                            "description": "Contact name."
+                          }
+                        ]
+                      },
+                      {
+                        "name": "delivery",
+                        "type": "object / null (delivery)",
+                        "children": [
+                          {
+                            "name": "status",
+                            "type": "string",
+                            "description": "Delivery status."
+                          },
+                          {
+                            "name": "tracking_url",
+                            "type": "string / null",
+                            "description": "Recipient tracking link."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "courier",
+                    "type": "object / null (courier)",
+                    "description": "Assigned courier data."
+                  }
+                ]
+              },
+              {
+                "name": "warnings",
+                "type": "list",
+                "description": "Warnings returned for calculable invalid data."
+              },
+              {
+                "name": "parameter_warnings",
+                "type": "object",
+                "description": "Parameter-level warning details."
+              }
+            ]
+          }
+        },
+        {
+          "id": "create-order",
+          "endpoint": "POST /create-order",
+          "method": "POST",
+          "description": "Yeni teslimat siparişi oluşturur. En az 2 point gerekir; ilk nokta pickup point, sonraki noktalar teslimat noktalarıdır.",
+          "parameters": [
+            {
+              "name": "type",
+              "type": "string",
+              "required": false,
+              "description": "Order type. Varsayılan standard; endofday siparişler de desteklenir."
+            },
+            {
+              "name": "matter",
+              "type": "string",
+              "required": true,
+              "description": "Teslimat içeriği. Kurye için anlaşılır olmalıdır."
+            },
+            {
+              "name": "points",
+              "type": "list",
+              "required": true,
+              "description": "Adres listesi. En az 2 nokta gönderilmelidir."
+            },
+            {
+              "name": "points[].address",
+              "type": "string",
+              "required": true,
+              "description": "Alım veya teslimat adresi."
+            },
+            {
+              "name": "points[].contact_person.phone",
+              "type": "phone",
+              "required": true,
+              "description": "Noktadaki kişi telefonu."
+            },
+            {
+              "name": "payment_method",
+              "type": "string",
+              "required": false,
+              "description": "cash, balance veya bank_card."
+            },
+            {
+              "name": "bank_card_id",
+              "type": "integer",
+              "required": false,
+              "description": "bank_card ödeme yöntemi için kart ID."
+            },
+            {
+              "name": "return_point",
+              "type": "list",
+              "required": false,
+              "description": "Başarısız teslimatta dönülecek nokta."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"matter\":\"Documents\",\"points\":[{\"address\":\"Ramazanoglu Mahallesi, Ensar Cd. No:36, Istanbul\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dervisali Mahallesi, Kelebek Sk. No:2, Istanbul\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
+            "javascript": "const response = await fetch(`${baseUrl}/create-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json\"\n  },\n  body: JSON.stringify({\n    matter: \"Documents\",\n    points: [\n      {\n        address: \"Ramazanoglu Mahallesi, Ensar Cd. No:36, Istanbul\",\n        contact_person: { phone: \"908880000001\" }\n      },\n      {\n        address: \"Dervisali Mahallesi, Kelebek Sk. No:2, Istanbul\",\n        contact_person: { phone: \"908880000001\" }\n      }\n    ]\n  })\n});\n\nconst order = await response.json();"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "is_successful",
+                "type": "boolean"
+              },
+              {
+                "name": "order",
+                "type": "object (order)",
+                "children": [
+                  {
+                    "name": "order_id",
+                    "type": "integer",
+                    "description": "Full order ID."
+                  },
+                  {
+                    "name": "order_name",
+                    "type": "string",
+                    "description": "Short order ID."
+                  },
+                  {
+                    "name": "status",
+                    "type": "string",
+                    "description": "Order status."
+                  },
+                  {
+                    "name": "payment_amount",
+                    "type": "money / null",
+                    "description": "Order price."
+                  },
+                  {
+                    "name": "points",
+                    "type": "Array of objects (points)",
+                    "description": "Order pickup and delivery points.",
+                    "children": [
+                      {
+                        "name": "point_id",
+                        "type": "integer",
+                        "description": "Point ID."
+                      },
+                      {
+                        "name": "address",
+                        "type": "string",
+                        "description": "Street address."
+                      },
+                      {
+                        "name": "contact_person",
+                        "type": "object (contact_person)",
+                        "children": [
+                          {
+                            "name": "phone",
+                            "type": "phone",
+                            "description": "Contact phone."
+                          },
+                          {
+                            "name": "name",
+                            "type": "string / null",
+                            "description": "Contact name."
+                          }
+                        ]
+                      },
+                      {
+                        "name": "delivery",
+                        "type": "object / null (delivery)",
+                        "children": [
+                          {
+                            "name": "status",
+                            "type": "string",
+                            "description": "Delivery status."
+                          },
+                          {
+                            "name": "tracking_url",
+                            "type": "string / null",
+                            "description": "Recipient tracking link."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "courier",
+                    "type": "object / null (courier)",
+                    "description": "Assigned courier data."
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "edit-order",
+          "endpoint": "POST /edit-order",
+          "method": "POST",
+          "description": "new, available, active veya delayed statülerindeki siparişleri düzenlemek için kullanılır. Gönderilmeyen alanlar değişmez; null gönderilen alan kaldırılır.",
+          "parameters": [
+            {
+              "name": "order_id",
+              "type": "integer",
+              "required": true,
+              "description": "Düzenlenecek tam sipariş ID."
+            },
+            {
+              "name": "matter",
+              "type": "string",
+              "required": false,
+              "description": "Teslimat içeriğini güncellemek için gönderilebilir."
+            },
+            {
+              "name": "backpayment_details",
+              "type": "string / null",
+              "required": false,
+              "description": "null gönderilirse siparişten kaldırılır."
+            },
+            {
+              "name": "points[].point_id",
+              "type": "integer",
+              "required": false,
+              "description": "Mevcut point düzenlenirken mutlaka gönderilmelidir; gönderilmeyen pointler silinir."
+            },
+            {
+              "name": "points[].packages[].order_package_id",
+              "type": "integer",
+              "required": false,
+              "description": "Mevcut paket düzenlenirken mutlaka gönderilmelidir."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"order_id\":1250032,\"matter\":\"Flowers\",\"backpayment_details\":null}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/edit-order'",
+            "javascript": "await fetch(`${baseUrl}/edit-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json\"\n  },\n  body: JSON.stringify({\n    order_id: 1250032,\n    matter: \"Flowers\",\n    backpayment_details: null\n  })\n});"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "is_successful",
+                "type": "boolean"
+              },
+              {
+                "name": "order",
+                "type": "object (order)",
+                "children": [
+                  {
+                    "name": "order_id",
+                    "type": "integer",
+                    "description": "Full order ID."
+                  },
+                  {
+                    "name": "order_name",
+                    "type": "string",
+                    "description": "Short order ID."
+                  },
+                  {
+                    "name": "status",
+                    "type": "string",
+                    "description": "Order status."
+                  },
+                  {
+                    "name": "payment_amount",
+                    "type": "money / null",
+                    "description": "Order price."
+                  },
+                  {
+                    "name": "points",
+                    "type": "Array of objects (points)",
+                    "description": "Order pickup and delivery points.",
+                    "children": [
+                      {
+                        "name": "point_id",
+                        "type": "integer",
+                        "description": "Point ID."
+                      },
+                      {
+                        "name": "address",
+                        "type": "string",
+                        "description": "Street address."
+                      },
+                      {
+                        "name": "contact_person",
+                        "type": "object (contact_person)",
+                        "children": [
+                          {
+                            "name": "phone",
+                            "type": "phone",
+                            "description": "Contact phone."
+                          },
+                          {
+                            "name": "name",
+                            "type": "string / null",
+                            "description": "Contact name."
+                          }
+                        ]
+                      },
+                      {
+                        "name": "delivery",
+                        "type": "object / null (delivery)",
+                        "children": [
+                          {
+                            "name": "status",
+                            "type": "string",
+                            "description": "Delivery status."
+                          },
+                          {
+                            "name": "tracking_url",
+                            "type": "string / null",
+                            "description": "Recipient tracking link."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "courier",
+                    "type": "object / null (courier)",
+                    "description": "Assigned courier data."
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "cancel-order",
+          "endpoint": "POST /cancel-order",
+          "method": "POST",
+          "description": "new, available, active veya delayed statülerindeki siparişi iptal eder. Kurye herhangi bir adrese uğradıysa sipariş iptal edilemez.",
+          "parameters": [
+            {
+              "name": "order_id",
+              "type": "integer",
+              "required": true,
+              "description": "İptal edilecek tam sipariş ID."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"order_id\":1250032}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/cancel-order'",
+            "javascript": "const response = await fetch(`${baseUrl}/cancel-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json\"\n  },\n  body: JSON.stringify({ order_id: 1250032 })\n});\n\nconst canceledOrder = await response.json();"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "is_successful",
+                "type": "boolean"
+              },
+              {
+                "name": "order",
+                "type": "object (order)",
+                "children": [
+                  {
+                    "name": "order_id",
+                    "type": "integer",
+                    "description": "Full order ID."
+                  },
+                  {
+                    "name": "order_name",
+                    "type": "string",
+                    "description": "Short order ID."
+                  },
+                  {
+                    "name": "status",
+                    "type": "string",
+                    "description": "Order status."
+                  },
+                  {
+                    "name": "payment_amount",
+                    "type": "money / null",
+                    "description": "Order price."
+                  },
+                  {
+                    "name": "points",
+                    "type": "Array of objects (points)",
+                    "description": "Order pickup and delivery points.",
+                    "children": [
+                      {
+                        "name": "point_id",
+                        "type": "integer",
+                        "description": "Point ID."
+                      },
+                      {
+                        "name": "address",
+                        "type": "string",
+                        "description": "Street address."
+                      },
+                      {
+                        "name": "contact_person",
+                        "type": "object (contact_person)",
+                        "children": [
+                          {
+                            "name": "phone",
+                            "type": "phone",
+                            "description": "Contact phone."
+                          },
+                          {
+                            "name": "name",
+                            "type": "string / null",
+                            "description": "Contact name."
+                          }
+                        ]
+                      },
+                      {
+                        "name": "delivery",
+                        "type": "object / null (delivery)",
+                        "children": [
+                          {
+                            "name": "status",
+                            "type": "string",
+                            "description": "Delivery status."
+                          },
+                          {
+                            "name": "tracking_url",
+                            "type": "string / null",
+                            "description": "Recipient tracking link."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "courier",
+                    "type": "object / null (courier)",
+                    "description": "Assigned courier data."
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "orders",
+          "endpoint": "GET /orders",
+          "method": "GET",
+          "description": "Sipariş listesini order_id değerine göre azalan sırayla döndürür. order_id, status, offset ve count ile filtrelenebilir.",
+          "parameters": [
+            {
+              "name": "order_id",
+              "type": "integer / list",
+              "required": false,
+              "description": "Tek sipariş ID veya sipariş ID listesi."
+            },
+            {
+              "name": "status",
+              "type": "string",
+              "required": false,
+              "description": "Order status filtresi. Örnek: available."
+            },
+            {
+              "name": "offset",
+              "type": "integer",
+              "required": false,
+              "description": "Pagination için atlanacak sipariş sayısı. Varsayılan 0."
+            },
+            {
+              "name": "count",
+              "type": "integer",
+              "required": false,
+              "description": "Dönecek maksimum kayıt sayısı. En fazla 50, varsayılan 10."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/orders?status=available'",
+            "javascript": "const response = await fetch(`${baseUrl}/orders?status=available`, {\n  headers: { \"X-DV-Auth-Token\": token }\n});\n\nconst orders = await response.json();"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "is_successful",
+                "type": "boolean"
+              },
+              {
+                "name": "orders",
+                "type": "Array of objects (orders)",
+                "children": [
+                  {
+                    "name": "order_id",
+                    "type": "integer",
+                    "description": "Full order ID."
+                  },
+                  {
+                    "name": "order_name",
+                    "type": "string",
+                    "description": "Short order ID."
+                  },
+                  {
+                    "name": "status",
+                    "type": "string",
+                    "description": "Order status."
+                  },
+                  {
+                    "name": "payment_amount",
+                    "type": "money / null",
+                    "description": "Order price."
+                  },
+                  {
+                    "name": "points",
+                    "type": "Array of objects (points)",
+                    "description": "Order pickup and delivery points.",
+                    "children": [
+                      {
+                        "name": "point_id",
+                        "type": "integer",
+                        "description": "Point ID."
+                      },
+                      {
+                        "name": "address",
+                        "type": "string",
+                        "description": "Street address."
+                      },
+                      {
+                        "name": "contact_person",
+                        "type": "object (contact_person)",
+                        "children": [
+                          {
+                            "name": "phone",
+                            "type": "phone",
+                            "description": "Contact phone."
+                          },
+                          {
+                            "name": "name",
+                            "type": "string / null",
+                            "description": "Contact name."
+                          }
+                        ]
+                      },
+                      {
+                        "name": "delivery",
+                        "type": "object / null (delivery)",
+                        "children": [
+                          {
+                            "name": "status",
+                            "type": "string",
+                            "description": "Delivery status."
+                          },
+                          {
+                            "name": "tracking_url",
+                            "type": "string / null",
+                            "description": "Recipient tracking link."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "courier",
+                    "type": "object / null (courier)",
+                    "description": "Assigned courier data."
+                  }
+                ]
+              },
+              {
+                "name": "orders_count",
+                "type": "integer",
+                "description": "Total number of found orders."
+              }
+            ]
+          }
+        },
+        {
+          "id": "courier",
+          "endpoint": "GET /courier",
+          "method": "GET",
+          "description": "Siparişe atanmış kurye bilgisini döndürür. Sipariş active ise ve kurye yoldaysa latitude ve longitude alanları da dönebilir.",
+          "parameters": [
+            {
+              "name": "order_id",
+              "type": "integer",
+              "required": true,
+              "description": "Kurye bilgisi alınacak tam sipariş ID."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/courier?order_id=1250032'",
+            "javascript": "const response = await fetch(`${baseUrl}/courier?order_id=1250032`, {\n  headers: { \"X-DV-Auth-Token\": token }\n});\n\nconst courier = await response.json();"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "is_successful",
+                "type": "boolean"
+              },
+              {
+                "name": "courier",
+                "type": "object / null (courier)",
+                "children": [
+                  {
+                    "name": "courier_id",
+                    "type": "integer"
+                  },
+                  {
+                    "name": "surname",
+                    "type": "string"
+                  },
+                  {
+                    "name": "name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "phone",
+                    "type": "phone"
+                  },
+                  {
+                    "name": "photo_url",
+                    "type": "string / null"
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "coordinate / null"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "coordinate / null"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "client",
+          "endpoint": "GET /client",
+          "method": "GET",
+          "description": "Müşteri profil bilgisini ve izin verilen ödeme yöntemlerini döndürür.",
+          "parameters": [
+            {
+              "name": "X-DV-Auth-Token",
+              "type": "header string",
+              "required": true,
+              "description": "Müşteri hesabını belirleyen auth token."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/client'",
+            "javascript": "const response = await fetch(`${baseUrl}/client`, {\n  headers: { \"X-DV-Auth-Token\": token }\n});\n\nconst client = await response.json();"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "is_successful",
+                "type": "boolean"
+              },
+              {
+                "name": "client",
+                "type": "object (client)",
+                "children": [
+                  {
+                    "name": "name",
+                    "type": "string / null"
+                  },
+                  {
+                    "name": "phone",
+                    "type": "phone / null"
+                  },
+                  {
+                    "name": "email",
+                    "type": "string / null"
+                  },
+                  {
+                    "name": "legal_type",
+                    "type": "string"
+                  },
+                  {
+                    "name": "allowed_payment_methods",
+                    "type": "Array of strings"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "bank-cards",
+          "endpoint": "GET /bank-cards",
+          "method": "GET",
+          "description": "Sipariş oluştururken kullanılabilecek kayıtlı banka kartlarını döndürür.",
+          "parameters": [
+            {
+              "name": "X-DV-Auth-Token",
+              "type": "header string",
+              "required": true,
+              "description": "Kartları listelemek için zorunlu auth token."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/bank-cards'",
+            "javascript": "const response = await fetch(`${baseUrl}/bank-cards`, {\n  headers: { \"X-DV-Auth-Token\": token }\n});\n\nconst cards = await response.json();"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "is_successful",
+                "type": "boolean"
+              },
+              {
+                "name": "bank_cards",
+                "type": "Array of objects (bank_cards)",
+                "children": [
+                  {
+                    "name": "bank_card_id",
+                    "type": "integer"
+                  },
+                  {
+                    "name": "bank_card_number_mask",
+                    "type": "string / null"
+                  },
+                  {
+                    "name": "expiration_date",
+                    "type": "string / null"
+                  },
+                  {
+                    "name": "card_type",
+                    "type": "string / null"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "labels",
+          "endpoint": "GET /labels",
+          "method": "GET",
+          "description": "ZPL veya PDF formatında kutu etiketlerini döndürür.",
+          "parameters": [
+            {
+              "name": "type",
+              "type": "string",
+              "required": true,
+              "description": "Label type: zpl veya pdf."
+            },
+            {
+              "name": "order_id",
+              "type": "integer / list",
+              "required": false,
+              "description": "Etiket alınacak sipariş ID veya ID listesi."
+            },
+            {
+              "name": "point_id",
+              "type": "integer / list",
+              "required": false,
+              "description": "Etiket alınacak point ID veya ID listesi."
+            },
+            {
+              "name": "delivery_id",
+              "type": "integer / list",
+              "required": false,
+              "description": "Etiket alınacak delivery ID veya ID listesi."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/labels?type=zpl&order_id[]=1250032&order_id[]=1250033'",
+            "javascript": "const params = new URLSearchParams();\nparams.set(\"type\", \"zpl\");\nparams.append(\"order_id[]\", \"1250032\");\nparams.append(\"order_id[]\", \"1250033\");\n\nconst response = await fetch(`${baseUrl}/labels?${params}`, {\n  headers: { \"X-DV-Auth-Token\": token }\n});\n\nconst labels = await response.json();"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "is_successful",
+                "type": "boolean"
+              },
+              {
+                "name": "labels",
+                "type": "Array of objects (labels)",
+                "children": [
+                  {
+                    "name": "type",
+                    "type": "string"
+                  },
+                  {
+                    "name": "order_id",
+                    "type": "integer"
+                  },
+                  {
+                    "name": "point_id",
+                    "type": "integer"
+                  },
+                  {
+                    "name": "delivery_id",
+                    "type": "integer / null"
+                  },
+                  {
+                    "name": "content",
+                    "type": "string",
+                    "description": "ZPL label content."
+                  },
+                  {
+                    "name": "content_base64",
+                    "type": "string",
+                    "description": "PDF label content encoded as base64."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders & Deliveries",
+      "items": [
+        {
+          "id": "status-model",
+          "endpoint": "INFO Status model",
+          "method": "INFO",
+          "description": "Order genel sipariş varlığıdır ve tüm teslimat noktalarını içerir. Delivery ise tek bir order point için oluşturulan daha detaylı teslimat varlığıdır.",
+          "parameters": [
+            {
+              "name": "order.status",
+              "type": "string",
+              "required": false,
+              "description": "new, available, active, completed, reactivated, draft, canceled veya delayed."
+            },
+            {
+              "name": "delivery.status",
+              "type": "string",
+              "required": false,
+              "description": "planned, active, finished, canceled, courier_assigned, parcel_picked_up, return_finished gibi delivery durumları."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/orders?status=active'",
+            "javascript": "const activeOrders = await fetch(`${baseUrl}/orders?status=active`, {\n  headers: { \"X-DV-Auth-Token\": token }\n}).then((response) => response.json());"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "order.status",
+                "type": "string"
+              },
+              {
+                "name": "delivery.status",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        {
+          "id": "order-types",
+          "endpoint": "INFO Order types",
+          "method": "INFO",
+          "description": "standard siparişlerde kurye adreslere belirlenen aralıklarda gider. endofday siparişlerde paket gün içinde teslim edilir ve yalnızca 2 point kabul edilir.",
+          "parameters": [
+            {
+              "name": "standard",
+              "type": "string",
+              "required": false,
+              "description": "Standart teslimat."
+            },
+            {
+              "name": "endofday",
+              "type": "string",
+              "required": false,
+              "description": "Gün içi teslimat; vehicle_type_id ve point zaman aralıkları otomatik ayarlanır."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"type\":\"endofday\",\"matter\":\"Documents\",\"total_weight_kg\":1,\"points\":[{\"address\":\"Pickup address\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff address\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
+            "javascript": "await fetch(`${baseUrl}/create-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json\"\n  },\n  body: JSON.stringify({\n    type: \"endofday\",\n    matter: \"Documents\",\n    total_weight_kg: 1,\n    points: [\n      { address: \"Pickup address\", contact_person: { phone: \"908880000001\" } },\n      { address: \"Dropoff address\", contact_person: { phone: \"908880000001\" } }\n    ]\n  })\n});"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "Array",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "standard",
+                "type": "string"
+              },
+              {
+                "name": "endofday",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        {
+          "id": "payment-methods",
+          "endpoint": "INFO Payment methods",
+          "method": "INFO",
+          "description": "Desteklenen ödeme yöntemleri cash, balance ve bank_card değerleridir. bank_card için bank_card_id gönderilmelidir.",
+          "parameters": [
+            {
+              "name": "cash",
+              "type": "string",
+              "required": false,
+              "description": "Nakit ödeme."
+            },
+            {
+              "name": "balance",
+              "type": "string",
+              "required": false,
+              "description": "Bakiyeden ödeme."
+            },
+            {
+              "name": "bank_card",
+              "type": "string",
+              "required": false,
+              "description": "Kayıtlı banka kartıyla ödeme."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"matter\":\"Documents\",\"payment_method\":\"bank_card\",\"bank_card_id\":80,\"points\":[{\"address\":\"Pickup\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
+            "javascript": "const payload = {\n  matter: \"Documents\",\n  payment_method: \"bank_card\",\n  bank_card_id: 80,\n  points: [\n    { address: \"Pickup\", contact_person: { phone: \"908880000001\" } },\n    { address: \"Dropoff\", contact_person: { phone: \"908880000001\" } }\n  ]\n};"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "Array",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "cash",
+                "type": "string"
+              },
+              {
+                "name": "balance",
+                "type": "string"
+              },
+              {
+                "name": "bank_card",
+                "type": "string"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "items": [
+        {
+          "id": "order-callback",
+          "endpoint": "POST Order callback",
+          "method": "POST",
+          "description": "Personal cabinet içinde Callback URL tanımlandığında order_created ve order_changed olayları bu URL’ye JSON olarak gönderilir. X-DV-Signature ile HMAC SHA256 imzası doğrulanmalıdır.",
+          "parameters": [
+            {
+              "name": "X-DV-Signature",
+              "type": "header string",
+              "required": true,
+              "description": "Callback Secret Key ile hesaplanan HMAC SHA256 imzası."
+            },
+            {
+              "name": "event_datetime",
+              "type": "timestamp",
+              "required": true,
+              "description": "Olay zamanı."
+            },
+            {
+              "name": "event_type",
+              "type": "string",
+              "required": true,
+              "description": "order_created veya order_changed."
+            },
+            {
+              "name": "order",
+              "type": "object",
+              "required": true,
+              "description": "Güncel order modeli."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --request POST \\\n  --header 'X-DV-Signature: SIGNATURE' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"event_type\":\"order_created\",\"order\":{\"order_id\":1250032}}' \\\n  'https://example.com/banabikurye/order-callback'",
+            "javascript": "import crypto from \"node:crypto\";\n\nfunction verifySignature(rawBody, signature, secret) {\n  const expected = crypto\n    .createHmac(\"sha256\", secret)\n    .update(rawBody)\n    .digest(\"hex\");\n\n  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));\n}"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "event_datetime",
+                "type": "timestamp"
+              },
+              {
+                "name": "event_type",
+                "type": "string"
+              },
+              {
+                "name": "order",
+                "type": "object (order)",
+                "children": [
+                  {
+                    "name": "order_id",
+                    "type": "integer",
+                    "description": "Full order ID."
+                  },
+                  {
+                    "name": "order_name",
+                    "type": "string",
+                    "description": "Short order ID."
+                  },
+                  {
+                    "name": "status",
+                    "type": "string",
+                    "description": "Order status."
+                  },
+                  {
+                    "name": "payment_amount",
+                    "type": "money / null",
+                    "description": "Order price."
+                  },
+                  {
+                    "name": "points",
+                    "type": "Array of objects (points)",
+                    "description": "Order pickup and delivery points.",
+                    "children": [
+                      {
+                        "name": "point_id",
+                        "type": "integer",
+                        "description": "Point ID."
+                      },
+                      {
+                        "name": "address",
+                        "type": "string",
+                        "description": "Street address."
+                      },
+                      {
+                        "name": "contact_person",
+                        "type": "object (contact_person)",
+                        "children": [
+                          {
+                            "name": "phone",
+                            "type": "phone",
+                            "description": "Contact phone."
+                          },
+                          {
+                            "name": "name",
+                            "type": "string / null",
+                            "description": "Contact name."
+                          }
+                        ]
+                      },
+                      {
+                        "name": "delivery",
+                        "type": "object / null (delivery)",
+                        "children": [
+                          {
+                            "name": "status",
+                            "type": "string",
+                            "description": "Delivery status."
+                          },
+                          {
+                            "name": "tracking_url",
+                            "type": "string / null",
+                            "description": "Recipient tracking link."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "courier",
+                    "type": "object / null (courier)",
+                    "description": "Assigned courier data."
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "delivery-callback",
+          "endpoint": "POST Delivery callback",
+          "method": "POST",
+          "description": "Delivery callback etkinleştirildiğinde delivery_created ve delivery_changed olayları ayrı delivery modeliyle gönderilir. Başarısız callback teslimlerinde 24 saate kadar yeniden deneme yapılır.",
+          "parameters": [
+            {
+              "name": "X-DV-Signature",
+              "type": "header string",
+              "required": true,
+              "description": "İstek gövdesi için HMAC SHA256 imzası."
+            },
+            {
+              "name": "event_type",
+              "type": "string",
+              "required": true,
+              "description": "delivery_created veya delivery_changed."
+            },
+            {
+              "name": "delivery",
+              "type": "object",
+              "required": true,
+              "description": "Delivery ID, status, address, courier ve package bilgilerini içerir."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --request POST \\\n  --header 'X-DV-Signature: SIGNATURE' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"event_type\":\"delivery_changed\",\"delivery\":{\"delivery_id\":11712,\"status\":\"active\"}}' \\\n  'https://example.com/banabikurye/delivery-callback'",
+            "javascript": "app.post(\"/banabikurye/delivery-callback\", express.raw({ type: \"application/json\" }), (req, res) => {\n  const signature = req.header(\"X-DV-Signature\");\n  const rawBody = req.body;\n\n  if (!verifySignature(rawBody, signature, process.env.CALLBACK_SECRET_KEY)) {\n    return res.status(401).send(\"Invalid signature\");\n  }\n\n  const event = JSON.parse(rawBody.toString(\"utf8\"));\n  res.status(204).end();\n});"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "event_datetime",
+                "type": "timestamp"
+              },
+              {
+                "name": "event_type",
+                "type": "string"
+              },
+              {
+                "name": "delivery",
+                "type": "object (delivery)",
+                "children": [
+                  {
+                    "name": "delivery_id",
+                    "type": "integer"
+                  },
+                  {
+                    "name": "order_id",
+                    "type": "integer / null"
+                  },
+                  {
+                    "name": "address",
+                    "type": "string"
+                  },
+                  {
+                    "name": "status",
+                    "type": "string"
+                  },
+                  {
+                    "name": "courier",
+                    "type": "object / null (courier)"
+                  },
+                  {
+                    "name": "packages",
+                    "type": "Array of objects (packages)"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Use cases",
+      "items": [
+        {
+          "id": "how-to-place-order",
+          "endpoint": "FLOW How to place an order",
+          "method": "FLOW",
+          "description": "Standart sipariş oluşturma akışı iki aşamalıdır: önce /calculate-order ile maliyet ve validasyon yapılır, sonra aynı veriler tamamlanarak /create-order ile sipariş oluşturulur.",
+          "parameters": [
+            {
+              "name": "1. calculate-order",
+              "type": "step",
+              "required": true,
+              "description": "Kargo ücretini payment_amount alanından gösterin; warnings kullanıcıya veya operasyona gösterilebilir."
+            },
+            {
+              "name": "2. create-order",
+              "type": "step",
+              "required": true,
+              "description": "Tüm zorunlu parametreleri gönderin. Bu aşamada errors kritik kabul edilir ve sipariş oluşturulmaz."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' --data '{\"matter\":\"Documents\",\"points\":[{\"address\":\"Pickup\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' 'https://robotapitest.banabikurye.com/api/business/1.6/calculate-order'\n\ncurl --include --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' --data '{\"matter\":\"Documents\",\"points\":[{\"address\":\"Pickup\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' 'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
+            "javascript": "const payload = {\n  matter: \"Documents\",\n  points: [\n    { address: \"Pickup\", contact_person: { phone: \"908880000001\" } },\n    { address: \"Dropoff\", contact_person: { phone: \"908880000001\" } }\n  ]\n};\n\nconst calculation = await fetch(`${baseUrl}/calculate-order`, {\n  method: \"POST\",\n  headers: { \"X-DV-Auth-Token\": token, \"Content-Type\": \"application/json\" },\n  body: JSON.stringify(payload)\n}).then((response) => response.json());\n\nconst order = await fetch(`${baseUrl}/create-order`, {\n  method: \"POST\",\n  headers: { \"X-DV-Auth-Token\": token, \"Content-Type\": \"application/json\" },\n  body: JSON.stringify(payload)\n}).then((response) => response.json());"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "calculation.order.payment_amount",
+                "type": "money / null"
+              },
+              {
+                "name": "calculation.warnings",
+                "type": "list"
+              },
+              {
+                "name": "order.order_id",
+                "type": "integer"
+              },
+              {
+                "name": "order.status",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        {
+          "id": "track-order-delivery",
+          "endpoint": "FLOW How to track order/delivery",
+          "method": "FLOW",
+          "description": "Sipariş ve teslimat takibi iki şekilde yapılabilir: otomatik callback bildirimleri veya manuel /orders ve /courier istekleri.",
+          "parameters": [
+            {
+              "name": "Automatic",
+              "type": "callback",
+              "required": false,
+              "description": "Personal cabinet içinde Callback URL tanımlayın ve order/delivery callbacklerini dinleyin."
+            },
+            {
+              "name": "Manual",
+              "type": "request",
+              "required": false,
+              "description": "/orders ile statüleri, /courier ile kurye bilgisi ve konumunu periyodik sorgulayın."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' 'https://robotapitest.banabikurye.com/api/business/1.6/orders?order_id=1250032'\n\ncurl --include --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' 'https://robotapitest.banabikurye.com/api/business/1.6/courier?order_id=1250032'",
+            "javascript": "const [orderResult, courierResult] = await Promise.all([\n  fetch(`${baseUrl}/orders?order_id=1250032`, { headers: { \"X-DV-Auth-Token\": token } }).then((r) => r.json()),\n  fetch(`${baseUrl}/courier?order_id=1250032`, { headers: { \"X-DV-Auth-Token\": token } }).then((r) => r.json())\n]);"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "orders",
+                "type": "Array of objects (orders)"
+              },
+              {
+                "name": "courier",
+                "type": "object / null (courier)"
+              }
+            ]
+          }
+        },
+        {
+          "id": "goods-buyout",
+          "endpoint": "FLOW Goods buyout",
+          "method": "FLOW",
+          "description": "Kurye pickup noktasında ürün bedeli ödeyip teslimat noktasında müşteriden tahsilat yapacaksa buyout_amount pickup point’e, taking_amount delivery point’e gönderilir.",
+          "parameters": [
+            {
+              "name": "points[0].buyout_amount",
+              "type": "money",
+              "required": true,
+              "description": "Kuryenin pickup noktasında ödeyeceği tutar."
+            },
+            {
+              "name": "points[1].taking_amount",
+              "type": "money",
+              "required": true,
+              "description": "Kuryenin müşteriden tahsil edeceği tutar."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"matter\":\"Documents\",\"points\":[{\"address\":\"Pickup\",\"buyout_amount\":\"100.00\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff\",\"taking_amount\":\"100.00\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
+            "javascript": "const payload = {\n  matter: \"Documents\",\n  points: [\n    { address: \"Pickup\", buyout_amount: \"100.00\", contact_person: { phone: \"908880000001\" } },\n    { address: \"Dropoff\", taking_amount: \"100.00\", contact_person: { phone: \"908880000001\" } }\n  ]\n};"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "order.points[].buyout_amount",
+                "type": "money"
+              },
+              {
+                "name": "order.points[].taking_amount",
+                "type": "money"
+              },
+              {
+                "name": "order.backpayment_details",
+                "type": "string / null"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Errors",
+      "items": [
+        {
+          "id": "request-error-codes",
+          "endpoint": "INFO Request error codes",
+          "method": "INFO",
+          "description": "Business API request error code döndürebilir. Önemli örnekler: required_auth_token, invalid_auth_token, required_method_get, required_method_post, invalid_post_json, invalid_parameters, invalid_api_method.",
+          "parameters": [
+            {
+              "name": "required_auth_token",
+              "type": "error code",
+              "required": false,
+              "description": "X-DV-Auth-Token header eksik."
+            },
+            {
+              "name": "invalid_auth_token",
+              "type": "error code",
+              "required": false,
+              "description": "Gönderilen auth token geçersiz."
+            },
+            {
+              "name": "invalid_parameters",
+              "type": "error code",
+              "required": false,
+              "description": "Parametre hatası var; detay için parameter_errors okunmalıdır."
+            },
+            {
+              "name": "invalid_api_method",
+              "type": "error code",
+              "required": false,
+              "description": "Bilinmeyen API methodu istendi."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/unknown'",
+            "javascript": "const result = await fetch(`${baseUrl}/unknown`, {\n  headers: { \"X-DV-Auth-Token\": token }\n}).then((response) => response.json());\n\n// { is_successful: false, errors: [\"invalid_api_method\"], parameter_errors: null }"
+          },
+          "responses": {
+            "status": 400,
+            "label": "Bad Request",
+            "schemaType": "object",
+            "contentType": "application/json",
+            "fields": [
+              {
+                "name": "is_successful",
+                "type": "boolean"
+              },
+              {
+                "name": "errors",
+                "type": "Array of strings"
+              },
+              {
+                "name": "parameter_errors",
+                "type": "object / null"
+              }
+            ]
+          }
+        },
+        {
+          "id": "parameter-error-codes",
+          "endpoint": "INFO Parameter error codes",
+          "method": "INFO",
+          "description": "Parametre bazlı hata kodları required, unknown, invalid_list, invalid_object, invalid_boolean, invalid_date, invalid_integer, invalid_string, invalid_phone, invalid_region, address_not_found, min_length, max_length gibi değerleri içerir.",
+          "parameters": [
+            {
+              "name": "required",
+              "type": "parameter error",
+              "required": false,
+              "description": "Zorunlu parametre gönderilmedi."
+            },
+            {
+              "name": "invalid_phone",
+              "type": "parameter error",
+              "required": false,
+              "description": "Telefon numarası geçersiz."
+            },
+            {
+              "name": "address_not_found",
+              "type": "parameter error",
+              "required": false,
+              "description": "Adres geocode edilemedi."
+            },
+            {
+              "name": "promo_code_not_available",
+              "type": "parameter error",
+              "required": false,
+              "description": "Promosyon kodu seçilen adres için kullanılamaz."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"points\":[{\"address\":\"Pickup\",\"contact_person\":{\"phone\":\"908880000001\"}},{}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
+            "javascript": "const result = await fetch(`${baseUrl}/create-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json\"\n  },\n  body: JSON.stringify({\n    points: [\n      { address: \"Pickup\", contact_person: { phone: \"908880000001\" } },\n      {}\n    ]\n  })\n}).then((response) => response.json());\n\nconsole.log(result.parameter_errors);"
+          },
+          "responses": {
+            "status": 400,
+            "label": "Bad Request",
+            "schemaType": "object",
+            "contentType": "application/json",
+            "fields": [
+              {
+                "name": "is_successful",
+                "type": "boolean"
+              },
+              {
+                "name": "errors",
+                "type": "Array of strings"
+              },
+              {
+                "name": "parameter_errors",
+                "type": "object",
+                "children": [
+                  {
+                    "name": "matter",
+                    "type": "Array of strings"
+                  },
+                  {
+                    "name": "points",
+                    "type": "Array of objects / null"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Changelog",
+      "items": [
+        {
+          "id": "changelog-1-6",
+          "endpoint": "INFO Version 1.6",
+          "method": "INFO",
+          "description": "Business API 1.6 içinde bazı ücret alanları nullable oldu; is_thermobox_required, return_point, checkin_code, pickup_checkin_code ve delivery checkin_code alanları eklendi.",
+          "parameters": [
+            {
+              "name": "payment_amount",
+              "type": "money / null",
+              "required": false,
+              "description": "1.6 ile nullable olan ücret alanlarından biri."
+            },
+            {
+              "name": "return_point",
+              "type": "list",
+              "required": false,
+              "description": "Sipariş parametrelerine eklenen return point alanı."
+            },
+            {
+              "name": "checkin_code",
+              "type": "string / null",
+              "required": false,
+              "description": "Point ve delivery modelinde kullanılan varış pin kodu."
+            }
+          ],
+          "codeSnippets": {
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"matter\":\"Documents\",\"is_thermobox_required\":true,\"points\":[{\"address\":\"Pickup\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff\",\"checkin_code\":\"1234\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
+            "javascript": "const payload = {\n  matter: \"Documents\",\n  is_thermobox_required: true,\n  points: [\n    { address: \"Pickup\", contact_person: { phone: \"908880000001\" } },\n    { address: \"Dropoff\", checkin_code: \"1234\", contact_person: { phone: \"908880000001\" } }\n  ]\n};"
+          },
+          "responses": {
+            "status": 200,
+            "label": "Successful",
+            "schemaType": "object",
+            "contentType": "*/*",
+            "fields": [
+              {
+                "name": "version",
+                "type": "string"
+              },
+              {
+                "name": "changes",
+                "type": "Array of strings"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Banabikurye Business API Docs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css"
+    />
+    <link rel="stylesheet" href="styles.css?v=i18n-toggle" />
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+    <script src="app.js?v=i18n-toggle" defer></script>
+  </head>
+  <body>
+    <div class="docs-shell">
+      <aside class="sidebar" aria-label="API navigasyonu">
+        <a class="brand" href="#intro" aria-label="Banabikurye Business API başlangıç">
+          <span class="brand-mark">BK</span>
+          <span>
+            <strong>Business API</strong>
+            <small>Banabikurye Docs</small>
+          </span>
+        </a>
+
+        <label class="search-box" for="apiSearch">
+          <span data-i18n="searchLabel">API ara</span>
+          <input id="apiSearch" type="search" placeholder="Endpoint, kategori, parametre..." autocomplete="off" />
+        </label>
+
+        <nav class="nav-sections" id="sidebarNav"></nav>
+      </aside>
+
+      <main class="content">
+        <div class="topbar">
+          <div class="language-switcher" aria-label="Dil seçimi">
+            <button type="button" class="selected" data-doc-lang="tr">TR</button>
+            <button type="button" data-doc-lang="en">EN</button>
+          </div>
+        </div>
+
+        <section class="hero" id="intro">
+          <span class="eyebrow" id="apiVersion">Business API</span>
+          <h1 id="apiTitle">Banabikurye API dokümantasyonu</h1>
+          <p id="apiDescription"></p>
+          <div class="hero-actions" id="apiMeta" aria-label="Hızlı bilgiler"></div>
+        </section>
+
+        <div id="endpointContent" aria-live="polite"></div>
+      </main>
+
+      <aside class="code-panel" aria-label="Kod örnekleri">
+        <div class="code-panel-inner">
+          <div class="code-header">
+            <span data-i18n="requestSamples">Request samples</span>
+            <div class="language-pills" id="languagePills" aria-label="Dil seçenekleri"></div>
+          </div>
+
+          <div id="codeExamples"></div>
+        </div>
+      </aside>
+    </div>
+
+    <noscript>Bu dokümantasyon arayüzü API verisini göstermek için JavaScript kullanır.</noscript>
+  </body>
+</html>
