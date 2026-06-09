@@ -171,6 +171,69 @@ const I18N = {
   }
 };
 
+const PARAMETER_DESCRIPTIONS_EN = {
+  "1. calculate-order": "Show the delivery price from payment_amount; warnings can be shown to the user or operations team.",
+  "2. create-order": "Send all required parameters. At this stage errors are critical and the order will not be created.",
+  Automatic: "Set a Callback URL in the personal cabinet and listen for order or delivery callbacks.",
+  "Content-Type": "For POST requests, send application/json; charset=utf-8 when needed.",
+  Manual: "Poll statuses with /orders and courier details or location with /courier.",
+  "X-DV-Auth-Token": "Secret auth token from the personal cabinet.",
+  "X-DV-Signature": "HMAC SHA256 signature calculated with the Callback Secret Key.",
+  address_not_found: "Address geocoding failed.",
+  backpayment_details: "Can be sent as null to remove it from the order.",
+  balance: "Payment from account balance.",
+  bank_card: "Payment with a saved bank card.",
+  bank_card_id: "Bank card ID required for the bank_card payment method.",
+  cash: "Cash payment.",
+  checkin_code: "Arrival PIN code used in the point and delivery model.",
+  count: "Maximum number of records to return. Cannot exceed 50; default is 10.",
+  delivery: "Contains delivery ID, status, address, courier, and package information.",
+  "delivery.status":
+    "Delivery statuses such as planned, active, finished, canceled, courier_assigned, parcel_picked_up, and return_finished.",
+  delivery_id: "Delivery ID or list of delivery IDs to retrieve labels for.",
+  endofday: "End-of-day delivery; vehicle type and point time intervals are set automatically.",
+  errors: "List of request error codes.",
+  event_datetime: "Event date and time.",
+  event_type: "Event type, such as order_created, order_changed, delivery_created, or delivery_changed.",
+  invalid_api_method: "Unknown API method was requested.",
+  invalid_auth_token: "The auth token is invalid.",
+  invalid_parameters: "The request contains parameter errors; read parameter_errors for details.",
+  invalid_phone: "Invalid phone number.",
+  is_successful: "Whether the request was successful.",
+  matter: "Delivery contents. Maximum length is 5,000 characters.",
+  money: "Money values are sent as strings to avoid rounding errors. Example: \"190.00\".",
+  offset: "Number of orders to skip for pagination. Default is 0.",
+  order: "Current order model.",
+  "order.status": "Order statuses: new, available, active, completed, reactivated, draft, canceled, or delayed.",
+  order_id: "Full order ID.",
+  parameter_errors: "Parameter-level error details returned with invalid_parameters.",
+  payment_amount: "One of the fee fields that became nullable in API 1.6.",
+  payment_method: "Payment method: cash, balance, or bank_card.",
+  phone: "Phone number as a string. Example: \"908880000001\".",
+  point_id: "Point ID or list of point IDs to retrieve labels for.",
+  points:
+    "List of addresses for the courier to visit. Standard orders support up to 99 points; end-of-day orders require exactly 2 points.",
+  "points[0].buyout_amount": "Amount the courier pays at the pickup point.",
+  "points[1].taking_amount": "Amount the courier collects from the customer.",
+  "points[].address": "Street address geocoded with Google Maps API. Maximum length is 350 characters.",
+  "points[].contact_person.phone": "Phone number of the contact person at the point.",
+  "points[].packages[].order_package_id": "Must be sent when editing an existing package.",
+  "points[].point_id": "Must be sent when editing an existing point; omitted points are deleted.",
+  productionUrl: "Use https://robot.banabikurye.com/api/business/1.6 for production requests.",
+  promo_code: "Promo code. Example: ILK20.",
+  promo_code_not_available: "Promo code is not available for the selected address.",
+  required: "Required parameter was not provided.",
+  required_auth_token: "X-DV-Auth-Token header is missing.",
+  return_point: "Return point for failed delivery.",
+  standard: "Standard delivery.",
+  status: "Order status filter. Example: available.",
+  testUrl: "Use https://robotapitest.banabikurye.com/api/business/1.6 for test requests.",
+  timestamp: "Example: 2026-05-21T13:14:34+03:00.",
+  total_weight_kg: "Total weight in kilograms. Required for end-of-day orders.",
+  type: "Order type. Default value is standard.",
+  vehicle_type_id: "Vehicle type. Default is 8 for standard orders; prohibited for end-of-day orders."
+};
+
 const state = {
   apiData: null,
   endpoints: [],
@@ -209,6 +272,12 @@ function localizedCategoryName(name) {
 
 function localizedEndpointDescription(endpoint) {
   return I18N[state.currentLang]?.endpointDescriptions?.[endpoint.id] || endpoint.description;
+}
+
+function localizedParameterDescription(parameter) {
+  if (state.currentLang !== "en") return parameter.description;
+
+  return PARAMETER_DESCRIPTIONS_EN[parameter.name] || parameter.description;
 }
 
 function localizedResponseLabel(label) {
@@ -333,7 +402,8 @@ function endpointSearchText(endpoint) {
     ...(endpoint.parameters || []).flatMap((parameter) => [
       parameter.name,
       parameter.type,
-      parameter.description
+      parameter.description,
+      localizedParameterDescription(parameter)
     ])
   ]
     .filter(Boolean)
@@ -391,7 +461,7 @@ function renderParameterRows(parameters) {
           <td><code>${escapeHtml(parameter.name)}</code></td>
           <td>${escapeHtml(parameter.type)}</td>
           <td>${parameter.required ? escapeHtml(t("yes")) : escapeHtml(t("no"))}</td>
-          <td>${escapeHtml(parameter.description)}</td>
+          <td>${escapeHtml(localizedParameterDescription(parameter))}</td>
         </tr>
       `
     )
@@ -543,7 +613,7 @@ function renderCodePanel() {
   const prismLanguage = PRISM_LANGUAGES[state.selectedLanguage] || state.selectedLanguage;
 
   nodes.codeExamples.innerHTML = `
-    <article class="code-card" data-code-card>
+    <article class="code-card collapsed" data-code-card>
       <div class="sample-tabs" aria-label="Request sample type">
         <button type="button" class="sample-tab active">${escapeHtml(t("payload"))}</button>
       </div>
@@ -561,6 +631,7 @@ function renderCodePanel() {
     ${renderTryItOut(endpoint)}
   `;
 
+  setCodeSampleCollapsed(true);
   highlightCode();
 }
 
@@ -778,6 +849,15 @@ function setCodeSampleCollapsed(shouldCollapse) {
   if (!card) return;
 
   card.classList.toggle("collapsed", shouldCollapse);
+
+  nodes.codeExamples.querySelectorAll("[data-code-action]").forEach((button) => {
+    const isActive =
+      (shouldCollapse && button.dataset.codeAction === "collapse") ||
+      (!shouldCollapse && button.dataset.codeAction === "expand");
+
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
 }
 
 function highlightCode() {

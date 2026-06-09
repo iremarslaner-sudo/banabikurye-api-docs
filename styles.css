@@ -759,7 +759,8 @@ td code {
 }
 
 .sample-actions button:hover,
-.sample-actions button:focus-visible {
+.sample-actions button:focus-visible,
+.sample-actions button.active {
   background: rgba(255, 255, 255, 0.12);
   outline: none;
 }
@@ -866,6 +867,7 @@ pre {
   margin: 0;
   width: 100%;
   max-width: 100%;
+  max-height: none;
   overflow: visible;
   padding: 6px 0 0;
   background: transparent !important;
@@ -885,10 +887,32 @@ pre code {
   text-shadow: none;
 }
 
+.code-card pre {
+  transition: max-height 180ms ease;
+}
+
+.code-card:not(.collapsed) pre {
+  max-height: none !important;
+  overflow: visible !important;
+  border-bottom: 0;
+}
+
 .code-card.collapsed pre {
-  max-height: 260px;
+  position: relative;
+  max-height: 74px !important;
   overflow: hidden;
   border-bottom: 1px solid var(--code-line);
+}
+
+.code-card.collapsed pre::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 34px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(13, 21, 23, 0), #0d1517);
 }
 
 .code-card pre[class*="language-"],
