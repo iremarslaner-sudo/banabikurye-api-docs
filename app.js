@@ -29,6 +29,7 @@ const I18N = {
     test: "Test",
     production: "Prod",
     auth: "Auth",
+    officialDocs: "Resmi doküman",
     parameters: "Parametreler",
     parameter: "Parametre",
     type: "Tip",
@@ -49,7 +50,8 @@ const I18N = {
     expandAll: "Tümünü aç",
     collapseAll: "Tümünü kapat",
     tryIt: "Dene",
-    tryNotAvailable: "Bu bölüm bilgilendirme veya akış açıklaması olduğu için canlı istek desteklenmiyor.",
+    tryNotAvailable: "Bu bölüm bilgilendirme, callback veya akış açıklaması olduğu için canlı istek desteklenmiyor.",
+    testOnlyNotice: "Canlı istekler güvenlik nedeniyle yalnızca test ortamına gönderilir. Production istekleri dokümantasyon arayüzünden gönderilemez.",
     environment: "Ortam",
     token: "Token",
     queryJson: "Query JSON",
@@ -108,6 +110,7 @@ const I18N = {
     test: "Test",
     production: "Prod",
     auth: "Auth",
+    officialDocs: "Official docs",
     parameters: "Parameters",
     parameter: "Parameter",
     type: "Type",
@@ -128,7 +131,8 @@ const I18N = {
     expandAll: "Expand all",
     collapseAll: "Collapse all",
     tryIt: "Try it out",
-    tryNotAvailable: "Live requests are not available for informational or flow sections.",
+    tryNotAvailable: "Live requests are not available for informational, callback, or flow sections.",
+    testOnlyNotice: "Live requests are sent only to the test environment for safety. Production requests cannot be sent from the documentation UI.",
     environment: "Environment",
     token: "Token",
     queryJson: "Query JSON",
@@ -187,8 +191,8 @@ const I18N = {
         "Business API may return request error codes. Common examples include required_auth_token, invalid_auth_token, required_method_get, required_method_post, invalid_post_json, invalid_parameters, and invalid_api_method.",
       "parameter-error-codes":
         "Parameter-level error codes include required, unknown, invalid_list, invalid_object, invalid_boolean, invalid_date, invalid_integer, invalid_string, invalid_phone, invalid_region, address_not_found, min_length, and max_length.",
-      "changelog-1-6":
-        "In Business API 1.6, several fee fields became nullable, and is_thermobox_required, return_point, checkin_code, pickup_checkin_code, and delivery checkin_code fields were added."
+      "changelog-1-8":
+        "Business API 1.8 added a new order type named vip_delivery. For vip_delivery orders, type must be set to vip_delivery and point-level required_start_datetime / required_finish_datetime fields must not be sent."
     }
   }
 };
@@ -229,7 +233,7 @@ const PARAMETER_DESCRIPTIONS_EN = {
   "order.status": "Order statuses: new, available, active, completed, reactivated, draft, canceled, or delayed.",
   order_id: "Full order ID.",
   parameter_errors: "Parameter-level error details returned with invalid_parameters.",
-  payment_amount: "One of the fee fields that became nullable in API 1.6.",
+  payment_amount: "One of the fee fields that became nullable in API 1.8.",
   payment_method: "Payment method: cash, balance, or bank_card.",
   phone: "Phone number as a string. Example: \"908880000001\".",
   point_id: "Point ID or list of point IDs to retrieve labels for.",
@@ -241,7 +245,7 @@ const PARAMETER_DESCRIPTIONS_EN = {
   "points[].contact_person.phone": "Phone number of the contact person at the point.",
   "points[].packages[].order_package_id": "Must be sent when editing an existing package.",
   "points[].point_id": "Must be sent when editing an existing point; omitted points are deleted.",
-  productionUrl: "Use https://robot.banabikurye.com/api/business/1.6 for production requests.",
+  productionUrl: "Use https://robot.banabikurye.com/api/business/1.8 for production requests.",
   promo_code: "Promo code. Example: ILK20.",
   promo_code_not_available: "Promo code is not available for the selected address.",
   required: "Required parameter was not provided.",
@@ -249,7 +253,7 @@ const PARAMETER_DESCRIPTIONS_EN = {
   return_point: "Return point for failed delivery.",
   standard: "Standard delivery.",
   status: "Order status filter. Example: available.",
-  testUrl: "Use https://robotapitest.banabikurye.com/api/business/1.6 for test requests.",
+  testUrl: "Use https://robotapitest.banabikurye.com/api/business/1.8 for test requests.",
   timestamp: "Example: 2026-05-21T13:14:34+03:00.",
   total_weight_kg: "Total weight in kilograms. Required for end-of-day orders.",
   type: "Order type. Default value is standard.",
@@ -398,8 +402,8 @@ function renderMeta(data) {
   nodes.apiDescription.textContent = t("apiDescription");
   nodes.apiMeta.innerHTML = `
     <span>${escapeHtml(t("test"))}: <code>${escapeHtml(data.baseUrls.test)}</code></span>
-    <span>${escapeHtml(t("production"))}: <code>${escapeHtml(data.baseUrls.production)}</code></span>
     <span>${escapeHtml(t("auth"))}: <code>${escapeHtml(data.auth.header)}</code></span>
+    <span><a href="${escapeHtml(data.resources?.officialDocs || "https://banabikurye.com/business-api/doc")}" target="_blank" rel="noreferrer">${escapeHtml(t("officialDocs"))}</a></span>
   `;
 }
 
@@ -671,7 +675,7 @@ function renderCodePanel() {
 }
 
 function isRunnableEndpoint(endpoint) {
-  return endpoint.method === "GET" || endpoint.method === "POST";
+  return (endpoint.method === "GET" || endpoint.method === "POST") && Boolean(getEndpointPath(endpoint));
 }
 
 function getEndpointPath(endpoint) {
@@ -745,12 +749,10 @@ function renderTryItOut(endpoint) {
         <h2>${escapeHtml(t("tryIt"))}</h2>
         <span class="method ${normalizeMethod(endpoint.method)}">${escapeHtml(endpoint.method)}</span>
       </div>
+      <p class="try-note">${escapeHtml(t("testOnlyNotice"))}</p>
       <label>
         <span>${escapeHtml(t("environment"))}</span>
-        <select data-try-env>
-          <option value="test">${escapeHtml(t("test"))}</option>
-          <option value="production">${escapeHtml(t("production"))}</option>
-        </select>
+        <input data-try-env type="text" value="${escapeHtml(t("test"))}" readonly />
       </label>
       <label>
         <span>${escapeHtml(t("token"))}</span>
@@ -774,8 +776,7 @@ function renderTryItOut(endpoint) {
 }
 
 function buildUrl(endpoint, card) {
-  const environment = card.querySelector("[data-try-env]").value;
-  const baseUrl = state.apiData.baseUrls[environment];
+  const baseUrl = state.apiData.baseUrls.test;
   const url = new URL(`${baseUrl}${getEndpointPath(endpoint)}`);
 
   if (endpoint.method === "GET") {

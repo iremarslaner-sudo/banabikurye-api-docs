@@ -1,14 +1,19 @@
 {
   "title": "Banabikurye Business API",
-  "version": "Business API 1.6",
+  "version": "Business API 1.8",
   "description": "Business API allows you to automatically place delivery orders in Banabikurye, manage orders, retrieve courier information and subscribe to order or delivery updates.",
   "baseUrls": {
-    "test": "https://robotapitest.banabikurye.com/api/business/1.6",
-    "production": "https://robot.banabikurye.com/api/business/1.6"
+    "test": "https://robotapitest.banabikurye.com/api/business/1.8",
+    "production": "https://robot.banabikurye.com/api/business/1.8"
   },
   "auth": {
     "header": "X-DV-Auth-Token",
     "description": "Secret auth token. Must be sent as an HTTP header with every request."
+  },
+  "resources": {
+    "officialDocs": "https://banabikurye.com/business-api/doc",
+    "testCabinet": "https://apitest.banabikurye.com",
+    "testApi": "https://robotapitest.banabikurye.com/api/business/1.8"
   },
   "categories": [
     {
@@ -24,18 +29,18 @@
               "name": "testUrl",
               "type": "string",
               "required": true,
-              "description": "Test istekleri için https://robotapitest.banabikurye.com/api/business/1.6 kullanılır."
+              "description": "Test istekleri için https://robotapitest.banabikurye.com/api/business/1.8 kullanılır."
             },
             {
               "name": "productionUrl",
               "type": "string",
               "required": true,
-              "description": "Production istekleri için https://robot.banabikurye.com/api/business/1.6 kullanılır."
+              "description": "Production istekleri için https://robot.banabikurye.com/api/business/1.8 kullanılır."
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6'",
-            "javascript": "const baseUrl = \"https://robotapitest.banabikurye.com/api/business/1.6\";\nconst token = process.env.BANABIKURYE_TOKEN;\n\nconst response = await fetch(baseUrl, {\n  headers: { \"X-DV-Auth-Token\": token }\n});\n\nconst result = await response.json();"
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8'",
+            "javascript": "const baseUrl = \"https://robotapitest.banabikurye.com/api/business/1.8\";\nconst token = process.env.BANABIKURYE_TOKEN;\n\nconst response = await fetch(baseUrl, {\n  headers: { \"X-DV-Auth-Token\": token }\n});\n\nconst result = await response.json();"
           },
           "responses": {
             "status": 200,
@@ -71,7 +76,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"matter\":\"Documents\"}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/calculate-order'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"matter\":\"Documents\"}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/calculate-order'",
             "javascript": "await fetch(`${baseUrl}/calculate-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json; charset=utf-8\"\n  },\n  body: JSON.stringify({ matter: \"Documents\" })\n});"
           },
           "responses": {
@@ -123,7 +128,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"points\":[{}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"points\":[{}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/create-order'",
             "javascript": "const response = await fetch(`${baseUrl}/create-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json\"\n  },\n  body: JSON.stringify({ points: [{}] })\n});\n\nconst result = await response.json();\n// { is_successful: false, errors: [\"invalid_parameters\"], parameter_errors: {...} }"
           },
           "responses": {
@@ -173,7 +178,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"insurance_amount\":\"190.00\",\"required_start_datetime\":\"2026-05-21T13:14:34+03:00\"}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/calculate-order'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"insurance_amount\":\"190.00\",\"required_start_datetime\":\"2026-05-21T13:14:34+03:00\"}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/calculate-order'",
             "javascript": "const payload = {\n  insurance_amount: \"190.00\",\n  required_start_datetime: \"2026-05-21T13:14:34+03:00\",\n  contact_person: { phone: \"908880000001\" }\n};"
           },
           "responses": {
@@ -272,7 +277,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"matter\":\"Documents\",\"promo_code\":\"ILK20\",\"points\":[{\"address\":\"Ramazanoglu Mahallesi, Ensar Cd. No:36, Istanbul\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dervisali Mahallesi, Kelebek Sk. No:2, Istanbul\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/calculate-order'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"matter\":\"Documents\",\"promo_code\":\"ILK20\",\"points\":[{\"address\":\"Ramazanoglu Mahallesi, Ensar Cd. No:36, Istanbul\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dervisali Mahallesi, Kelebek Sk. No:2, Istanbul\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/calculate-order'",
             "javascript": "const response = await fetch(`${baseUrl}/calculate-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json\"\n  },\n  body: JSON.stringify({\n    matter: \"Documents\",\n    promo_code: \"ILK20\",\n    points: [\n      {\n        address: \"Ramazanoglu Mahallesi, Ensar Cd. No:36, Istanbul\",\n        contact_person: { phone: \"908880000001\" }\n      },\n      {\n        address: \"Dervisali Mahallesi, Kelebek Sk. No:2, Istanbul\",\n        contact_person: { phone: \"908880000001\" }\n      }\n    ]\n  })\n});\n\nconst calculation = await response.json();"
           },
           "responses": {
@@ -434,7 +439,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"matter\":\"Documents\",\"points\":[{\"address\":\"Ramazanoglu Mahallesi, Ensar Cd. No:36, Istanbul\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dervisali Mahallesi, Kelebek Sk. No:2, Istanbul\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"matter\":\"Documents\",\"points\":[{\"address\":\"Ramazanoglu Mahallesi, Ensar Cd. No:36, Istanbul\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dervisali Mahallesi, Kelebek Sk. No:2, Istanbul\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/create-order'",
             "javascript": "const response = await fetch(`${baseUrl}/create-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json\"\n  },\n  body: JSON.stringify({\n    matter: \"Documents\",\n    points: [\n      {\n        address: \"Ramazanoglu Mahallesi, Ensar Cd. No:36, Istanbul\",\n        contact_person: { phone: \"908880000001\" }\n      },\n      {\n        address: \"Dervisali Mahallesi, Kelebek Sk. No:2, Istanbul\",\n        contact_person: { phone: \"908880000001\" }\n      }\n    ]\n  })\n});\n\nconst order = await response.json();"
           },
           "responses": {
@@ -568,7 +573,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"order_id\":1250032,\"matter\":\"Flowers\",\"backpayment_details\":null}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/edit-order'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"order_id\":1250032,\"matter\":\"Flowers\",\"backpayment_details\":null}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/edit-order'",
             "javascript": "await fetch(`${baseUrl}/edit-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json\"\n  },\n  body: JSON.stringify({\n    order_id: 1250032,\n    matter: \"Flowers\",\n    backpayment_details: null\n  })\n});"
           },
           "responses": {
@@ -678,7 +683,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"order_id\":1250032}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/cancel-order'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"order_id\":1250032}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/cancel-order'",
             "javascript": "const response = await fetch(`${baseUrl}/cancel-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json\"\n  },\n  body: JSON.stringify({ order_id: 1250032 })\n});\n\nconst canceledOrder = await response.json();"
           },
           "responses": {
@@ -806,7 +811,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/orders?status=available'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/orders?status=available'",
             "javascript": "const response = await fetch(`${baseUrl}/orders?status=available`, {\n  headers: { \"X-DV-Auth-Token\": token }\n});\n\nconst orders = await response.json();"
           },
           "responses": {
@@ -921,7 +926,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/courier?order_id=1250032'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/courier?order_id=1250032'",
             "javascript": "const response = await fetch(`${baseUrl}/courier?order_id=1250032`, {\n  headers: { \"X-DV-Auth-Token\": token }\n});\n\nconst courier = await response.json();"
           },
           "responses": {
@@ -985,7 +990,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/client'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/client'",
             "javascript": "const response = await fetch(`${baseUrl}/client`, {\n  headers: { \"X-DV-Auth-Token\": token }\n});\n\nconst client = await response.json();"
           },
           "responses": {
@@ -1041,7 +1046,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/bank-cards'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/bank-cards'",
             "javascript": "const response = await fetch(`${baseUrl}/bank-cards`, {\n  headers: { \"X-DV-Auth-Token\": token }\n});\n\nconst cards = await response.json();"
           },
           "responses": {
@@ -1111,7 +1116,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/labels?type=zpl&order_id[]=1250032&order_id[]=1250033'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/labels?type=zpl&order_id[]=1250032&order_id[]=1250033'",
             "javascript": "const params = new URLSearchParams();\nparams.set(\"type\", \"zpl\");\nparams.append(\"order_id[]\", \"1250032\");\nparams.append(\"order_id[]\", \"1250033\");\n\nconst response = await fetch(`${baseUrl}/labels?${params}`, {\n  headers: { \"X-DV-Auth-Token\": token }\n});\n\nconst labels = await response.json();"
           },
           "responses": {
@@ -1184,7 +1189,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/orders?status=active'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/orders?status=active'",
             "javascript": "const activeOrders = await fetch(`${baseUrl}/orders?status=active`, {\n  headers: { \"X-DV-Auth-Token\": token }\n}).then((response) => response.json());"
           },
           "responses": {
@@ -1224,7 +1229,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"type\":\"endofday\",\"matter\":\"Documents\",\"total_weight_kg\":1,\"points\":[{\"address\":\"Pickup address\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff address\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"type\":\"endofday\",\"matter\":\"Documents\",\"total_weight_kg\":1,\"points\":[{\"address\":\"Pickup address\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff address\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/create-order'",
             "javascript": "await fetch(`${baseUrl}/create-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json\"\n  },\n  body: JSON.stringify({\n    type: \"endofday\",\n    matter: \"Documents\",\n    total_weight_kg: 1,\n    points: [\n      { address: \"Pickup address\", contact_person: { phone: \"908880000001\" } },\n      { address: \"Dropoff address\", contact_person: { phone: \"908880000001\" } }\n    ]\n  })\n});"
           },
           "responses": {
@@ -1270,7 +1275,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"matter\":\"Documents\",\"payment_method\":\"bank_card\",\"bank_card_id\":80,\"points\":[{\"address\":\"Pickup\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"matter\":\"Documents\",\"payment_method\":\"bank_card\",\"bank_card_id\":80,\"points\":[{\"address\":\"Pickup\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/create-order'",
             "javascript": "const payload = {\n  matter: \"Documents\",\n  payment_method: \"bank_card\",\n  bank_card_id: 80,\n  points: [\n    { address: \"Pickup\", contact_person: { phone: \"908880000001\" } },\n    { address: \"Dropoff\", contact_person: { phone: \"908880000001\" } }\n  ]\n};"
           },
           "responses": {
@@ -1532,7 +1537,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' --data '{\"matter\":\"Documents\",\"points\":[{\"address\":\"Pickup\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' 'https://robotapitest.banabikurye.com/api/business/1.6/calculate-order'\n\ncurl --include --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' --data '{\"matter\":\"Documents\",\"points\":[{\"address\":\"Pickup\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' 'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
+            "curl": "curl --include --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' --data '{\"matter\":\"Documents\",\"points\":[{\"address\":\"Pickup\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' 'https://robotapitest.banabikurye.com/api/business/1.8/calculate-order'\n\ncurl --include --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' --data '{\"matter\":\"Documents\",\"points\":[{\"address\":\"Pickup\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' 'https://robotapitest.banabikurye.com/api/business/1.8/create-order'",
             "javascript": "const payload = {\n  matter: \"Documents\",\n  points: [\n    { address: \"Pickup\", contact_person: { phone: \"908880000001\" } },\n    { address: \"Dropoff\", contact_person: { phone: \"908880000001\" } }\n  ]\n};\n\nconst calculation = await fetch(`${baseUrl}/calculate-order`, {\n  method: \"POST\",\n  headers: { \"X-DV-Auth-Token\": token, \"Content-Type\": \"application/json\" },\n  body: JSON.stringify(payload)\n}).then((response) => response.json());\n\nconst order = await fetch(`${baseUrl}/create-order`, {\n  method: \"POST\",\n  headers: { \"X-DV-Auth-Token\": token, \"Content-Type\": \"application/json\" },\n  body: JSON.stringify(payload)\n}).then((response) => response.json());"
           },
           "responses": {
@@ -1580,7 +1585,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' 'https://robotapitest.banabikurye.com/api/business/1.6/orders?order_id=1250032'\n\ncurl --include --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' 'https://robotapitest.banabikurye.com/api/business/1.6/courier?order_id=1250032'",
+            "curl": "curl --include --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' 'https://robotapitest.banabikurye.com/api/business/1.8/orders?order_id=1250032'\n\ncurl --include --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' 'https://robotapitest.banabikurye.com/api/business/1.8/courier?order_id=1250032'",
             "javascript": "const [orderResult, courierResult] = await Promise.all([\n  fetch(`${baseUrl}/orders?order_id=1250032`, { headers: { \"X-DV-Auth-Token\": token } }).then((r) => r.json()),\n  fetch(`${baseUrl}/courier?order_id=1250032`, { headers: { \"X-DV-Auth-Token\": token } }).then((r) => r.json())\n]);"
           },
           "responses": {
@@ -1620,7 +1625,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"matter\":\"Documents\",\"points\":[{\"address\":\"Pickup\",\"buyout_amount\":\"100.00\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff\",\"taking_amount\":\"100.00\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"matter\":\"Documents\",\"points\":[{\"address\":\"Pickup\",\"buyout_amount\":\"100.00\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff\",\"taking_amount\":\"100.00\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/create-order'",
             "javascript": "const payload = {\n  matter: \"Documents\",\n  points: [\n    { address: \"Pickup\", buyout_amount: \"100.00\", contact_person: { phone: \"908880000001\" } },\n    { address: \"Dropoff\", taking_amount: \"100.00\", contact_person: { phone: \"908880000001\" } }\n  ]\n};"
           },
           "responses": {
@@ -1681,7 +1686,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/unknown'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/unknown'",
             "javascript": "const result = await fetch(`${baseUrl}/unknown`, {\n  headers: { \"X-DV-Auth-Token\": token }\n}).then((response) => response.json());\n\n// { is_successful: false, errors: [\"invalid_api_method\"], parameter_errors: null }"
           },
           "responses": {
@@ -1737,7 +1742,7 @@
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"points\":[{\"address\":\"Pickup\",\"contact_person\":{\"phone\":\"908880000001\"}},{}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"points\":[{\"address\":\"Pickup\",\"contact_person\":{\"phone\":\"908880000001\"}},{}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/create-order'",
             "javascript": "const result = await fetch(`${baseUrl}/create-order`, {\n  method: \"POST\",\n  headers: {\n    \"X-DV-Auth-Token\": token,\n    \"Content-Type\": \"application/json\"\n  },\n  body: JSON.stringify({\n    points: [\n      { address: \"Pickup\", contact_person: { phone: \"908880000001\" } },\n      {}\n    ]\n  })\n}).then((response) => response.json());\n\nconsole.log(result.parameter_errors);"
           },
           "responses": {
@@ -1777,33 +1782,33 @@
       "name": "Changelog",
       "items": [
         {
-          "id": "changelog-1-6",
-          "endpoint": "INFO Version 1.6",
+          "id": "changelog-1-8",
+          "endpoint": "INFO Version 1.8",
           "method": "INFO",
-          "description": "Business API 1.6 içinde bazı ücret alanları nullable oldu; is_thermobox_required, return_point, checkin_code, pickup_checkin_code ve delivery checkin_code alanları eklendi.",
+          "description": "Business API 1.8 ile vip_delivery order type eklendi. vip_delivery için type parametresi vip_delivery olmalı ve point içindeki required_start_datetime / required_finish_datetime alanları gönderilmemelidir.",
           "parameters": [
             {
-              "name": "payment_amount",
-              "type": "money / null",
-              "required": false,
-              "description": "1.6 ile nullable olan ücret alanlarından biri."
+              "name": "type",
+              "type": "string",
+              "required": true,
+              "description": "VIP delivery siparişleri için vip_delivery gönderilmelidir."
             },
             {
-              "name": "return_point",
-              "type": "list",
+              "name": "points[].required_start_datetime",
+              "type": "timestamp / null",
               "required": false,
-              "description": "Sipariş parametrelerine eklenen return point alanı."
+              "description": "vip_delivery siparişlerinde gönderilmemelidir."
             },
             {
-              "name": "checkin_code",
-              "type": "string / null",
+              "name": "points[].required_finish_datetime",
+              "type": "timestamp / null",
               "required": false,
-              "description": "Point ve delivery modelinde kullanılan varış pin kodu."
+              "description": "vip_delivery siparişlerinde gönderilmemelidir."
             }
           ],
           "codeSnippets": {
-            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"matter\":\"Documents\",\"is_thermobox_required\":true,\"points\":[{\"address\":\"Pickup\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff\",\"checkin_code\":\"1234\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.6/create-order'",
-            "javascript": "const payload = {\n  matter: \"Documents\",\n  is_thermobox_required: true,\n  points: [\n    { address: \"Pickup\", contact_person: { phone: \"908880000001\" } },\n    { address: \"Dropoff\", checkin_code: \"1234\", contact_person: { phone: \"908880000001\" } }\n  ]\n};"
+            "curl": "curl --include \\\n  --header 'X-DV-Auth-Token: SECRET_AUTH_TOKEN' \\\n  --data '{\"type\":\"vip_delivery\",\"matter\":\"Documents\",\"points\":[{\"address\":\"Pickup\",\"contact_person\":{\"phone\":\"908880000001\"}},{\"address\":\"Dropoff\",\"contact_person\":{\"phone\":\"908880000001\"}}]}' \\\n  'https://robotapitest.banabikurye.com/api/business/1.8/create-order'",
+            "javascript": "const payload = {\n  type: \"vip_delivery\",\n  matter: \"Documents\",\n  points: [\n    { address: \"Pickup\", contact_person: { phone: \"908880000001\" } },\n    { address: \"Dropoff\", contact_person: { phone: \"908880000001\" } }\n  ]\n};"
           },
           "responses": {
             "status": 200,
